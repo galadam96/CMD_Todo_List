@@ -4,25 +4,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void showMenu(void);
-int getInput(); // More complex function for getting input
-int getInput_simple(); //Simpler input selection and return
+void showMenu();
+int getInput(); //input selection and return
+char* addTask();
+void flushInputBuffer();
+void listTask(char* task);
 
 int main() {
 	int input = 0;
+	char** task = (char**)malloc(2 * sizeof(char*));
+	while (1) {
+		showMenu();
+		input = getInput();
 
-	system("cls");
-	showMenu();
-	input = getInput_simple();
+		printf("\nDEBUG: Your choice is: %i\n", input);
 
-	printf("\nDEBUG: Your choice is: %i", input);
 
-	//while (1) {}
-		
+		if (input == 1) { //TBD
+			task[0] = addTask();
+
+		}
+		else if (input == 2) {
+			listTask(task[0]);
+		} //TBD
+		else if (input == 3) {} //TBD
+		else if (input == 4) {} //TBD
+		else if (input == 5) {} //TBD
+		else if (input == 6) { //exit program
+			printf("Bye!");
+			break;
+		}
+		//system("cls");
+	}	
+	free(task);
+	return 0;
 }
 
 
-void showMenu(void) {  //Shows main menu   
+void showMenu() {  //Shows main menu   
 	printf(" -----------------------\n");
 	printf("|\tTo Do List\t|");
 	printf("\n -----------------------\n");
@@ -37,60 +56,53 @@ void showMenu(void) {  //Shows main menu
 	
 }
 
-int getInput() { //Gets input from user and checks if its valid
-	int input = 0;
-	int validInput = 0;
-	
-	while (1) {
-		printf("Enter a choice: ");
-		validInput = scanf_s("%i", &input);// Store scanf_s return value (1 if valid parameter specifier is given)
-		//Invalid input (not number)
-		if (validInput != 1) {
-			printf("\nInvalid input. Only numbers from 1 to 6!\n");
-			// Clear input buffer 
-			int c;
-			while ((c = getchar()) != '\n' && c != EOF);
-		}
-
-		//Invalid number (not 1-6)
-		 else if (input < 1 || input > 6) {
-			printf("\nInvalid number. Choose from 1 to 6!\n");
-			// Clear input buffer 
-			int c;
-			while ((c = getchar()) != '\n' && c != EOF);
-		}
-		//Valid input
-		 else {
-			break;
-		}
-		
-	}
-	return input;
-}
-int getInput_simple() {
+int getInput() {
 	int input = 0;
 	while (1) {
 		printf("Enter a choice: ");
 		scanf_s("%i", &input);
-		if (input == 1) { //TBD
-			//addTask();
-			break;
-		}
-		else if (input == 2) {} //TBD
-		else if (input == 3) {} //TBD
-		else if (input == 4) {} //TBD
-		else if (input == 5) {} //TBD
-		else if (input == 6) {
-			printf("Bye!");
+		if (input == 1 || input == 2 || input == 3 || input == 4 || input == 5 || input == 6) {
 			break;
 		}
 		else{
 			printf("\nInvalid input. Only numbers from 1 to 6!\n");
 			// Clear input buffer, to avoid infinite loop
-			int c;
-			while ((c = getchar()) != '\n' && c != EOF);
+			flushInputBuffer();
 		}
 	}
 	return input;
 
+}
+
+char* addTask() {
+	flushInputBuffer();
+	//char newTask_addTask[100] = { 0 }; // Can not be return as array
+	char* newTask_addTask = NULL;
+	newTask_addTask = (char*)malloc(100 * sizeof(char));
+	if (newTask_addTask == NULL) {
+		printf("Memory allocation failed!");
+		exit(1);
+	}
+	
+	printf("Please enter the task you want to add!\n");
+	
+	fgets(newTask_addTask, 100, stdin); //Reads the whole line and stores it in newTask
+	//Removes the new line if there is any.
+	if (newTask_addTask[strlen(newTask_addTask) - 1] == '\n') {
+		newTask_addTask[strlen(newTask_addTask) - 1] = '\0';
+	}
+	printf("%s has been added to the list.\n", newTask_addTask);
+	
+	//fflush(stdout); // Empties stdout buffer. Needed if any bugs occur when calling addTask function
+	return newTask_addTask;
+}
+
+void flushInputBuffer() {
+	int c;
+	while ((c = getchar()) != '\n' && c != EOF);
+}
+
+void listTask(char* task) {
+	printf("\nTask list:\n");
+	printf("%s\n\n", task);
 }
