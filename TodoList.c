@@ -11,6 +11,7 @@ int getInput(); //input selection and return
 char* addTask();
 void flushInputBuffer();
 void listTask(char** task,int taskCount);
+void deleteTask(char** task, int taskCount);
 
 int main() {
 	int input = 0;
@@ -23,17 +24,18 @@ int main() {
 		printf("\nDEBUG: Your choice is: %i\n", input);
 
 
-		if (input == 1) { //TBD
+		if (input == 1) {
 			task[taskCounter] = addTask();
 			taskCounter++;
-
 		}
 		else if (input == 2) {
 			listTask(task,taskCounter);
-		} //TBD
+		} 
 		else if (input == 3) {} //TBD
 		else if (input == 4) {} //TBD
-		else if (input == 5) {} //TBD
+		else if (input == 5) {
+			deleteTask(task,taskCounter);
+		} 
 		else if (input == 6) { //exit program
 			printf("Bye!");
 			break;
@@ -110,7 +112,28 @@ void listTask(char** task, int taskCount) {
 	printf("\nTask list:\n\n");
 	
 	for (int i = 0; i < taskCount; i++) {
-		printf(" %s\n",task[i]);
+		printf("%i) %s\n",i+1, task[i]);
 	}
 	
+}
+
+void deleteTask(char** task, int taskCount) {
+	int index = 0;
+	printf("\nEnter the index of the task you want to delete: ");
+	scanf_s("%i", &index);
+
+	if (index < 1 || index > taskCount) {
+		printf("\nInvalid index!\n");
+		return;
+	}
+	//Delete selected task
+	free(task[index - 1]);
+
+	//Squeeze the array after deleting to fill the empty space
+	for (int i = index - 1; i < taskCount - 1; i++) {
+		task[i] = task[i + 1];
+	}
+	task[taskCount - 1] = NULL; // set the last element to NULL
+	taskCount--;
+	printf("Task at index %i has been deleted.\n", index);
 }
