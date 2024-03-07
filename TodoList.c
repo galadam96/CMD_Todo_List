@@ -4,15 +4,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TASKNUMBER 50
+#define TASKLENGTH 100
 void showMenu();
 int getInput(); //input selection and return
 char* addTask();
 void flushInputBuffer();
-void listTask(char* task);
+void listTask(char** task,int taskCount);
 
 int main() {
 	int input = 0;
-	char** task = (char**)malloc(2 * sizeof(char*));
+	char** task = (char**)malloc(TASKNUMBER * sizeof(char*));
+	int taskCounter = 0;
 	while (1) {
 		showMenu();
 		input = getInput();
@@ -21,11 +24,12 @@ int main() {
 
 
 		if (input == 1) { //TBD
-			task[0] = addTask();
+			task[taskCounter] = addTask();
+			taskCounter++;
 
 		}
 		else if (input == 2) {
-			listTask(task[0]);
+			listTask(task,taskCounter);
 		} //TBD
 		else if (input == 3) {} //TBD
 		else if (input == 4) {} //TBD
@@ -78,7 +82,7 @@ char* addTask() {
 	flushInputBuffer();
 	//char newTask_addTask[100] = { 0 }; // Can not be return as array
 	char* newTask_addTask = NULL;
-	newTask_addTask = (char*)malloc(100 * sizeof(char));
+	newTask_addTask = (char*)malloc(TASKLENGTH * sizeof(char));
 	if (newTask_addTask == NULL) {
 		printf("Memory allocation failed!");
 		exit(1);
@@ -102,7 +106,11 @@ void flushInputBuffer() {
 	while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void listTask(char* task) {
-	printf("\nTask list:\n");
-	printf("%s\n\n", task);
+void listTask(char** task, int taskCount) {
+	printf("\nTask list:\n\n");
+	
+	for (int i = 0; i < taskCount; i++) {
+		printf(" %s\n",task[i]);
+	}
+	
 }
