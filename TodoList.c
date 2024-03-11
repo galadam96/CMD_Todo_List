@@ -29,19 +29,21 @@ int main() {
 			taskCounter++;
 		}
 		else if (input == 2) {
-			listTask(task,taskCounter);
-		} 
+			listTask(task, taskCounter);
+		}
 		else if (input == 3) {} //TBD
 		else if (input == 4) {} //TBD
 		else if (input == 5) {
-			deleteTask(task,taskCounter);
-		} 
+	
+			deleteTask(task, taskCounter);
+			taskCounter--;
+		}
 		else if (input == 6) { //exit program
 			printf("Bye!");
 			break;
 		}
 		//system("cls");
-	}	
+	}
 	free(task);
 	return 0;
 }
@@ -92,7 +94,7 @@ char* addTask() {
 	
 	printf("Please enter the task you want to add!\n");
 	
-	fgets(newTask_addTask, 100, stdin); //Reads the whole line and stores it in newTask
+	fgets(newTask_addTask, TASKLENGTH, stdin); //Reads the whole line and stores it in newTask
 	//Removes the new line if there is any.
 	if (newTask_addTask[strlen(newTask_addTask) - 1] == '\n') {
 		newTask_addTask[strlen(newTask_addTask) - 1] = '\0';
@@ -119,21 +121,23 @@ void listTask(char** task, int taskCount) {
 
 void deleteTask(char** task, int taskCount) {
 	int index = 0;
-	printf("\nEnter the index of the task you want to delete: ");
+	printf("Enter the index of the task you want to delete: ");
 	scanf_s("%i", &index);
+    if (index < 1 || index > taskCount) {
+        printf("\nInvalid index!\n");
+        return;
+    }
 
-	if (index < 1 || index > taskCount) {
-		printf("\nInvalid index!\n");
-		return;
-	}
-	//Delete selected task
-	free(task[index - 1]);
+    // Delete selected task
+    free(task[index - 1]);
 
-	//Squeeze the array after deleting to fill the empty space
-	for (int i = index - 1; i < taskCount - 1; i++) {
-		task[i] = task[i + 1];
-	}
-	task[taskCount - 1] = NULL; // set the last element to NULL
-	taskCount--;
-	printf("Task at index %i has been deleted.\n", index);
+    // Squeeze the array after deleting to fill the empty space
+    for (int i = index - 1; i < taskCount - 1; i++) {
+        task[i] = task[i + 1];
+    }
+
+    // set the last element to NULL
+    task[taskCount - 1] = NULL;
+
+    printf("Task at index %i has been deleted.\n", index);
 }
