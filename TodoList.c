@@ -10,13 +10,20 @@ void showMenu();
 int getInput(); //input selection and return
 char* addTask();
 void flushInputBuffer();
-void listTask(char** task,int taskCount);
+void listTask(char** task,int taskCount, char *isComplete);
 void deleteTask(char** task, int taskCount);
+void markComplete(char *isComplete,int taskcount);
 
 int main() {
 	int input = 0;
 	char** task = (char**)malloc(TASKNUMBER * sizeof(char*));
 	int taskCounter = 0;
+	char* isComplete = (char*)malloc(TASKNUMBER * sizeof(char));
+	//initialize every element as space char
+	for (int i = 0; i < TASKNUMBER; i++) {
+		isComplete[i] = ' ';
+	}
+
 	while (1) {
 		showMenu();
 		input = getInput();
@@ -29,27 +36,30 @@ int main() {
 			taskCounter++;
 		}
 		else if (input == 2) {
-			listTask(task, taskCounter);
+			listTask(task, taskCounter,isComplete);
 		}
-		else if (input == 3) {} //TBD
-		else if (input == 4) {} //TBD
-		else if (input == 5) {
+		else if (input == 3) {
+			 markComplete(isComplete,taskCounter);
+		} 
+		else if (input == 4) {
 	
 			deleteTask(task, taskCounter);
 			taskCounter--;
 		}
-		else if (input == 6) { //exit program
+		else if (input == 5) { //exit program
 			printf("Bye!");
 			break;
 		}
-		//system("cls");
+		
 	}
 	free(task);
+	free(isComplete);
 	return 0;
 }
 
 
 void showMenu() {  //Shows main menu   
+	
 	printf(" -----------------------\n");
 	printf("|\tTo Do List\t|");
 	printf("\n -----------------------\n");
@@ -57,9 +67,8 @@ void showMenu() {  //Shows main menu
 	printf("\n1) Add a task");
 	printf("\n2) List all tasks");
 	printf("\n3) Mark as complete");
-	printf("\n4) Edit task");
-	printf("\n5) Delete task");
-	printf("\n6) Exit");
+	printf("\n4) Delete task");
+	printf("\n5) Exit");
 	printf("\n");
 	
 }
@@ -69,7 +78,7 @@ int getInput() {
 	while (1) {
 		printf("Enter a choice: ");
 		scanf_s("%i", &input);
-		if (input == 1 || input == 2 || input == 3 || input == 4 || input == 5 || input == 6) {
+		if (input == 1 || input == 2 || input == 3 || input == 4 || input == 5) {
 			break;
 		}
 		else{
@@ -83,6 +92,8 @@ int getInput() {
 }
 
 char* addTask() {
+	system("cls"); // clear console
+
 	flushInputBuffer();
 	//char newTask_addTask[100] = { 0 }; // Can not be return as array
 	char* newTask_addTask = NULL;
@@ -110,17 +121,19 @@ void flushInputBuffer() {
 	while ((c = getchar()) != '\n' && c != EOF);
 }
 
-void listTask(char** task, int taskCount) {
+void listTask(char** task, int taskCount, char* isComplete) {
+	system("cls"); // clear console
 	printf("\nTask list:\n\n");
 	
 	for (int i = 0; i < taskCount; i++) {
-		printf("%i) %s\n",i+1, task[i]);
+		printf("%i)[%c]%s\n",i+1,isComplete[i], task[i]);
 	}
 	
 }
 
 void deleteTask(char** task, int taskCount) {
 	int index = 0;
+	system("cls"); // clear console
 	printf("Enter the index of the task you want to delete: ");
 	scanf_s("%i", &index);
     if (index < 1 || index > taskCount) {
@@ -140,4 +153,18 @@ void deleteTask(char** task, int taskCount) {
     task[taskCount - 1] = NULL;
 
     printf("Task at index %i has been deleted.\n", index);
+}
+
+void markComplete(char* isComplete,int taskCount) {
+	int index = 0;
+	system("cls"); // clear console
+	printf("Type the index of the task you want to mark as completed: ");
+	scanf_s("%i", & index);
+	if (index < 1 || index > taskCount) {
+		printf("\nInvalid index!\n");
+		return;
+	}
+
+	isComplete[index-1] = 'X';
+	printf("\nTask number %i status has been changed.\n", index);
 }
